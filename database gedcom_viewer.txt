@@ -1,0 +1,100 @@
+CREATE TABLE IF NOT EXISTS `families` (
+  `family_id` int(11) NOT NULL AUTO_INCREMENT,
+  `gedcom_family_id` varchar(255) NOT NULL,
+  `gedcom_file_id` int(11) NOT NULL,
+  `husband` varchar(55) NOT NULL,
+  `wife` varchar(55) NOT NULL,
+  `marriage_date` varchar(55) DEFAULT NULL,
+  `marriage_place` varchar(1024) DEFAULT NULL,
+  `divorce_date` varchar(55) DEFAULT NULL,
+  `divorce_place` varchar(1024) DEFAULT NULL,
+  `children` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`family_id`),
+  KEY `gedcom_file_id` (`gedcom_file_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `gedcom_files`
+--
+
+CREATE TABLE IF NOT EXISTS `gedcom_files` (
+  `file_id` int(11) NOT NULL AUTO_INCREMENT,
+  `path` varchar(255) NOT NULL,
+  `first` varchar(55) DEFAULT NULL,
+  `cnt_individuals` int(11) DEFAULT NULL,
+  `cnt_families` int(11) DEFAULT NULL,
+  PRIMARY KEY (`file_id`),
+  UNIQUE KEY `path` (`path`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `individuals`
+--
+
+CREATE TABLE IF NOT EXISTS `individuals` (
+  `individual_id` int(11) NOT NULL AUTO_INCREMENT,
+  `gedcom_individual_id` varchar(255) NOT NULL,
+  `gedcom_file_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `nickname` varchar(255) DEFAULT NULL,
+  `lastname_prefix` varchar(55) DEFAULT NULL,
+  `last_name` varchar(255) DEFAULT NULL,
+  `gender` enum('F','M','U') NOT NULL DEFAULT 'U',
+  `birth_date` varchar(255) DEFAULT NULL,
+  `birth_place` varchar(1024) DEFAULT NULL,
+  `baptism_date` varchar(255) DEFAULT NULL,
+  `baptism_place` varchar(1024) DEFAULT NULL,
+  `death_date` varchar(255) DEFAULT NULL,
+  `death_place` varchar(1024) DEFAULT NULL,
+  `death_cause` varchar(1024) DEFAULT NULL,
+  `buried_date` varchar(255) DEFAULT NULL,
+  `buried_place` varchar(1024) DEFAULT NULL,
+  `occupation` varchar(255) DEFAULT NULL,
+  `religion` varchar(255) DEFAULT NULL,
+  `gedcom_note_id` varchar(55) DEFAULT NULL,
+  `child_of_family_id` varchar(255) DEFAULT NULL,
+  `spouse_of_family_id` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`individual_id`),
+  KEY `gedcom_file_id` (`gedcom_file_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Tabelstructuur voor tabel `notes`
+--
+
+CREATE TABLE IF NOT EXISTS `notes` (
+  `note_id` int(11) NOT NULL AUTO_INCREMENT,
+  `note` text NOT NULL,
+  `file_id` int(11) NOT NULL,
+  `gedcom_note_id` varchar(55) NOT NULL,
+  PRIMARY KEY (`note_id`),
+  KEY `file_id` (`file_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+--
+-- Beperkingen voor geëxporteerde tabellen
+--
+
+--
+-- Beperkingen voor tabel `families`
+--
+ALTER TABLE `families`
+  ADD CONSTRAINT `families_ibfk_1` FOREIGN KEY (`gedcom_file_id`) REFERENCES `gedcom_files` (`file_id`) ON DELETE CASCADE;
+
+--
+-- Beperkingen voor tabel `individuals`
+--
+ALTER TABLE `individuals`
+  ADD CONSTRAINT `individuals_ibfk_1` FOREIGN KEY (`gedcom_file_id`) REFERENCES `gedcom_files` (`file_id`) ON DELETE CASCADE;
+
+--
+-- Beperkingen voor tabel `notes`
+--
+ALTER TABLE `notes`
+  ADD CONSTRAINT `notes_ibfk_1` FOREIGN KEY (`file_id`) REFERENCES `gedcom_files` (`file_id`) ON DELETE CASCADE;
